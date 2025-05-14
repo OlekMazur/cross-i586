@@ -12,6 +12,9 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    - name: Setup pages
+      id: pages
+      uses: actions/configure-pages@v5
     - name: Cache buildroot
       id: cache-buildroot
       uses: actions/cache@v4
@@ -28,11 +31,23 @@ jobs:
       run: |
         cp -dp buildroot.conf buildroot/.config
         make -C buildroot -j `nproc`
-    - name: Prepare artifact
-      run: tar cvJf cross-i586.tar.xz -C buildroot/output/host .
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: cross-i586
-        compression-level: 0
-        path: cross-i586.tar.xz
+    - name: Prepare artifacts
+      run: |
+        mkdir -p _site
+        tar cJf _site/cross-i586.tar.xz -C buildroot/output/host .
+    - name: Upload pages artifact
+      uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy
+      id: deployment
+      uses: actions/deploy-pages@v4
