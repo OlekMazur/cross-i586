@@ -27,7 +27,7 @@ jobs:
     - name: Build
       run: |
         cp -dp buildroot.conf buildroot/.config
-        make -j `nproc`
+        make -C buildroot -j `nproc`
     - name: Prepare artifact
       run: tar cvJf cross-i586.tar.xz -C buildroot/output/host .
     - name: Upload artifact
