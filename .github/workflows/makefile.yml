@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Cache buildroot
+      id: cache-buildroot
+      uses: actions/cache@v4
+      with:
+        path: buildroot
+        key: buildroot-2025.02
+    - name: Download & unpack buildroot
+      if: steps.cache-buildroot.outputs.cache-hit != 'true'
+      run: |
+        wget -c 'https://buildroot.org/downloads/buildroot-2025.02.tar.xz'
+        tar xf buildroot-2025.02.tar.xz
+        mv buildroot-2025.02 buildroot
+    - name: Build
+      run: |
+        cp -dp buildroot.conf buildroot/.config
+        make -j `nproc`
+    - name: Prepare artifact
+      run: tar cvJf cross-i586.tar.xz -C buildroot/output/host .
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: cross-i586
+        compression-level: 0
+        path: cross-i586.tar.xz
