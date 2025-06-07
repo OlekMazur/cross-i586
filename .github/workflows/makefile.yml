@@ -20,20 +20,20 @@ jobs:
       uses: actions/cache@v4
       with:
         path: buildroot
-        key: buildroot-2025.05-rc1
+        key: buildroot-2025.05-rc2
     - name: Download & unpack buildroot
       if: steps.cache-buildroot.outputs.cache-hit != 'true'
       run: |
-        wget -c 'https://buildroot.org/downloads/buildroot-2025.05-rc1.tar.xz'
-        tar xf buildroot-2025.05-rc1.tar.xz
-        mv buildroot-2025.05-rc1 buildroot
+        wget -c 'https://buildroot.org/downloads/buildroot-2025.05-rc2.tar.xz'
+        tar xf buildroot-2025.05-rc2.tar.xz
+        mv buildroot-2025.05-rc2 buildroot
     - name: Build
       run: |
         cp -dp buildroot.conf buildroot/.config
         make -C buildroot -j `nproc`
     - name: Prepare artifact
       run: |
-        rm -rf buildroot/output/host/i686-buildroot-linux-uclibc/sysroot/{lib/ld-uClibc*.so,lib/libc.so.*,lib/libuClibc-*.so,usr/include,usr/lib}
+        rm -rf buildroot/output/host/i686-buildroot-linux-uclibc/sysroot/{lib/ld-uClibc.so.*,lib/ld-uClibc-*.so,lib/libc.so.*,lib/libuClibc-*.so,usr/include,usr/lib}
         tar c -C buildroot/output/host . | xz -9 > _site/cross-i586.tar.xz
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
