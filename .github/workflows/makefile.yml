@@ -20,13 +20,13 @@ jobs:
       uses: actions/cache@v4
       with:
         path: buildroot
-        key: buildroot-2025.05-rc2
+        key: buildroot-2025.05
     - name: Download & unpack buildroot
       if: steps.cache-buildroot.outputs.cache-hit != 'true'
       run: |
-        wget -c 'https://buildroot.org/downloads/buildroot-2025.05-rc2.tar.xz'
-        tar xf buildroot-2025.05-rc2.tar.xz
-        mv buildroot-2025.05-rc2 buildroot
+        wget -c 'https://buildroot.org/downloads/buildroot-2025.05.tar.xz'
+        tar xf buildroot-2025.05.tar.xz
+        mv buildroot-2025.05 buildroot
     - name: Build
       run: |
         cp -dp buildroot.conf buildroot/.config
