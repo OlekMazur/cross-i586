@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Setup pages
       id: pages
       uses: actions/configure-pages@v6
@@ -20,13 +20,13 @@ jobs:
       uses: actions/cache@v5
       with:
         path: buildroot
-        key: buildroot-2026.02.1
+        key: buildroot-2026.05.1
     - name: Download & unpack buildroot
       if: steps.cache-buildroot.outputs.cache-hit != 'true'
       run: |
-        wget -c 'https://buildroot.org/downloads/buildroot-2026.02.1.tar.xz'
-        tar xf buildroot-2026.02.1.tar.xz
-        mv buildroot-2026.02.1 buildroot
+        wget -c 'https://buildroot.org/downloads/buildroot-2026.05.1.tar.xz'
+        tar xf buildroot-2026.05.1.tar.xz
+        mv buildroot-2026.05.1 buildroot
     - name: Build
       run: |
         cp -dp buildroot.conf buildroot/.config
@@ -35,8 +35,8 @@ jobs:
       run: |
         rm -rf buildroot/output/host/i686-buildroot-linux-uclibc/sysroot/{lib/ld-uClibc.so.*,lib/ld-uClibc-*.so,lib/libc.so.*,lib/libuClibc-*.so,usr/include,usr/lib}
         rm -rf buildroot/output/host/bin/{ac*,auto*,ifnames,m4,libtool*}
-        tar c -C buildroot/output/host . | xz -9 > _site/buildroot-2026.02.1-x64.tar.xz
-        sed -i 's/_BUILDROOT_VERSION_/buildroot-2026.02.1/g' _site/index.html
+        tar c -C buildroot/output/host . | xz -9 > _site/buildroot-2026.05.1-x64.tar.xz
+        sed -i 's/_BUILDROOT_VERSION_/buildroot-2026.05.1/g' _site/index.html
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
 
